@@ -5,8 +5,9 @@ class PlacesController < ApplicationController
   end
 
   def show
-    @place = Place.find_by({ "id" => params["id"] })
-    @entries = Entry.where({ "place_id" => @place["id"] })
+    @place = Place.find(params[:id])
+    @entry = Entry.new
+    @entries = @place.entries.where(user_id: current_user.id)
   end
 
   def new

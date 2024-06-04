@@ -1,16 +1,32 @@
-<h1><%= @place["name"] %></h1>
-
-<h2>My Entries</h2>
-<% for entry in @entries %>
-  <h3><%= entry["title"] %></h3>
-  <h4><%= entry["occurred_on"] %></h4>
-  <p><%= entry["description"] %></p>
+<% if current_user %>
+  <%= form_with(model: @entry, url: entries_path) do |form| %>
+    <div class="mb-3">
+      <%= form.label :title, class: 'form-label' %>
+      <%= form.text_field :title, class: 'form-control' %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :description, class: 'form-label' %>
+      <%= form.text_area :description, class: 'form-control' %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :occurred_on, class: 'form-label' %>
+      <%= form.date_field :occurred_on, class: 'form-control' %>
+    </div>
+    <%= form.hidden_field :place_id, value: @place.id %>
+    <%= form.submit 'Create Entry', class: 'btn btn-primary' %>
+  <% end %>
 <% end %>
 
-<p>
-  <a href="/entries/new?place_id=<%= @place["id"] %>">New Entry</a>
-</p>
-
-<p>
-  <a href="/places">Back to All Places</a>
-</p>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <% @entries.each do |entry| %>
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><%= entry.title %></h5>
+          <p class="card-text"><%= entry.description %></p>
+          <p class="card-text">Occurred on: <%= entry.occurred_on %></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

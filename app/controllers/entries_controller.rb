@@ -4,13 +4,16 @@ class EntriesController < ApplicationController
   end
 
   def create
-    @entry = Entry.new
-    @entry["title"] = params["title"]
-    @entry["description"] = params["description"]
-    @entry["occurred_on"] = params["occurred_on"]
-    @entry["place_id"] = params["place_id"]
-    @entry.save
-    redirect_to "/places/#{@entry["place_id"]}"
+    @entry = current_user.entries.new(entry_params)
+    if @entry.save
+      redirect_to place_path(@entry.place), notice: 'Entry created successfully.'
+    else
+      render :new
+    end
   end
-
-end
+  
+  private
+  
+  def entry_params
+    params.require(:entry).permit(:title, :description, :occurred_on, :place_id)
+  end
